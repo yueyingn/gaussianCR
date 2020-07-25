@@ -1,2 +1,3 @@
 # gaussianCR
-implementation of the constrained gaussian realization
+
+Implementation of the constrained realization to Gaussian primordial density fields.
