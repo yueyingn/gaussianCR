@@ -224,8 +224,7 @@ class gsCR(object):
             if 'TG' in self.CONS or 'full' in self.CONS: 
                 print ("TG: ","epsilon = {:.1f} km/s/Mpc, omega = {:.2f}, a2={:.2f}, b2={:.2f}, p2={:.2f}".format(epsilon,omega,a2,b2,p2))
         
-        return c_target[self.cmask]
-        
+        return c_target[self.cmask]        
         
     
     def read_out_c18(self,dx_field,rpos=None):
@@ -234,6 +233,7 @@ class gsCR(object):
         : dx_field  : with shape (Ng,Ng,Ng), the density contrast field (averaged = 0), Lbox should match self.Lbox
         : rpos      : the position to read out c values, if not set, then use self.xpk
         : return    : [c1~c18], c1 with c1/sigma0_RG = nu, c11~13 in unit of km/s, c14~c18 in unit of km/s/Mpc
+                      and peak_data, structured array stores the peak parameters.
         """  
         
         reps = np.shape(dx_field)
@@ -262,8 +262,27 @@ class gsCR(object):
         for i in range(0,18):
             dk_smoothed = np.conj(Hhats[i](kgrid,k2,H0,F))*wdk_field
             cs[i] = reps[0]**3*np.fft.ifftn(dk_smoothed).real[pkidx]
+            
+        #-----------------------------------------------------
+        f2_field = extract_ellipsoid_info(cs[4:10])
+        T_field = extract_tidal_info(cs[13:18])
+        
+        peak_data = np.array([(cs[0]/self.sigma0_RG,
+                               cs[1:4],
+                               f2_field[0]/self.sigma2_RG,
+                               f2_field[1],f2_field[2],
+                               f2_field[3:6],
+                               cs[10:13],
+                               T_field[0],
+                               T_field[1],
+                               T_field[2:5])],
+                            dtype=[('nu','d'),('f1','3d'), 
+                                   ('xd','d'),('a12sq','d'),
+                                   ('a13sq','d'),('Euler1','3d'),
+                                   ('v_peculiar','3d'),('epsilon','d'),
+                                   ('omega','d'),('Euler2','3d')])
 
-        return cs
+        return cs,peak_data
     
     
     def find_xpk(self,dx_field):
@@ -286,7 +305,7 @@ class gsCR(object):
         
         return xpk
 
-    
+
 
 #------------------------------------------- 
 def initialize_kgrid(Nmesh,Lbox):
