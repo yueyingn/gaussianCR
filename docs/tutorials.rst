@@ -6,4 +6,6 @@ This is an overview of how to apply constrained realizations to gaussian random 
 .. toctree::
     :maxdepth: 2
 
-    examples/broad_overview
+    examples/Overview
+    examples/Build_Ensemble_Mean_Field
+    examples/Construct_constrained_realization
