@@ -1,10 +1,19 @@
 # gaussianCR
 
-Implementation of the constrained realization to Gaussian primordial density fields.
+This is an implementation of the constrained realization to Gaussian primordial density fields, the theoritical formalism is developed by van de Weygaert & Bertschinger 1996. 
 
-## Usage and tutorial
+Features
+------------
+* A general tool to impose constraints to the linear density field.
+* Support the full 18 constraints simultaneously applied to the density field, so that one can impose peak, gravity and tidal field constraints to any Gaussian random field.
+* Convolution-type constraints with a Gaussian kernel, one can specify the size of the Gaussian kernel $R_G$ to select the scale upon which to impose the constraints.
+* For now, we only support imposing the sets of constraints to 1 position in the density field at each time.  To obtain two separate density peaks, one need to construct one after another. 
 
-Check the full documentation [here](https://gaussiancr.readthedocs.io/en/latest/tutorials.html).
+
+Usage and tutorial
+------------
+
+[Read the docs here.](https://gaussiancr.readthedocs.io/en/latest/tutorials.html)
 
 
 Dependencies
