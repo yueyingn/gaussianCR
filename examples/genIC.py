@@ -1,5 +1,4 @@
 import numpy as np
-from bigfile import FileMPI
 from nbodykit.lab import *
 from fastpm.core import leapfrog, Solver, autostages
 from pmesh.pm import ParticleMesh
@@ -8,6 +7,8 @@ import nbodykit.cosmology as nbcosmos
 from gaussianCR.construct import *
 from gaussianCR.cosmo import *
 from args import get_args
+from saveIC import *
+
 
 np.set_printoptions(precision=3,linewidth=150,suppress=True)
 
@@ -38,7 +39,6 @@ print ("Lbox = %.1f"%Lbox,"Ng = %d"%Ng,"RG = %.2f"%RG)
 # -------------------------------------------
 cosmology = nbcosmos.WMAP9
 mycosmo = Cosmos(FLRW=True,obj=cosmology)
-
 
 # generate linear density field at z=0 
 # -------------------------------------------
@@ -103,73 +103,16 @@ dx_constraint = dx_field + dx_ensemble
 
 # Verify from dx_constrained
 # ----------------------------------------------------- 
-c_result,peak_result = fg.read_out_c18(dx_field,rpos=xpk)
+c_result,peak_result = fg.read_out_c18(dx_constraint,rpos=xpk)
+print ("*********************************************")
 print ("After constraint:")
 print_info(peak_result)
 print ("*********************************************")
 
 
-# zel-dovich IC
-# feed IC into MP-Gadget3, distance in kpc/h, v in peculiar velocity
+# save IC
 # -----------------------------------------------------
-z = args.redshift
-scale_a = 1./(1+z)
-data = dx_constraint # density contrast field centered at zero
-mesh = ArrayMesh(data, BoxSize=Lbox)
-dk_field = mesh.compute(mode='complex')
-
-shift_gas =  - 0.5 * (cosmology.Omega0_m - cosmology.Omega0_b) / cosmology.Omega0_m
-shift_dm = 0.5 * cosmology.Omega0_b / cosmology.Omega0_m
-
-Q_gas = pm.generate_uniform_particle_grid(shift=shift_gas)
-Q_dm = pm.generate_uniform_particle_grid(shift=shift_dm)
-
-state_gas = solver.lpt(dk_field, Q_gas, a=scale_a, order=1)
-state_dm = solver.lpt(dk_field, Q_dm, a=scale_a, order=1)
-
-
-# save state
-# -----------------------------------------------------
-def periodic_wrap(pos,Lbox):
-    pos[pos>Lbox] -= Lbox
-    pos[pos<0] += Lbox
-    return pos
-
-IC_path = args.IC_path
-
-state = state_dm
-with FileMPI(state.pm.comm, IC_path, create=True) as ff:
-    
-    m0 = state.cosmology.rho_crit(0)*state.cosmology.Omega0_b*(Lbox**3)/state.csize
-    m1 = state.cosmology.rho_crit(0)*(state.cosmology.Om0-state.cosmology.Omega0_b)*(Lbox**3)/state.csize
-    
-    with ff.create('Header') as bb:
-        bb.attrs['BoxSize'] = Lbox*1000
-        bb.attrs['HubbleParam'] = state.cosmology.h
-        bb.attrs['MassTable'] = [m0, m1, 0, 0, 0, 0]
-        
-        bb.attrs['Omega0'] = state.cosmology.Om0
-        bb.attrs['OmegaBaryon'] = state.cosmology.Omega0_b
-        bb.attrs['OmegaLambda'] = state.cosmology.Omega0_lambda
-        
-        bb.attrs['Time'] = state.a['S']
-        bb.attrs['TotNumPart'] = [state.csize, state.csize, 0, 0, 0, 0]
-        bb.attrs['UsePeculiarVelocity'] = 1  
-        bb.attrs['Seed'] = Rdm_seed
-
-    ff.create_from_array('1/Position', 1000*periodic_wrap(state.X,Lbox)) # in kpc/h
-    ff.create_from_array('1/Velocity', state.V) # Peculiar velocity in km/s
-    dmID = np.arange(state.csize)
-    ff.create_from_array('1/ID', dmID)
-    
-    #######################################################
-    ff.create_from_array('0/Position', 1000*periodic_wrap(state_gas.X,Lbox))
-    ff.create_from_array('0/Velocity', state_gas.V)    
-    gasID = np.arange(state.csize,2*state.csize)
-    ff.create_from_array('0/ID', gasID) 
-    
-print ("IC generated!")
-print ("*********************************************")
+state = saveIC_gadget3(args.IC_path,dx_constraint,Lbox,Ng,cosmology,redshift=args.redshift)
 
 
 # re-Verify by re-sampling the particles to grid
@@ -178,7 +121,7 @@ cat1 = ArrayCatalog({'Position': state.X})
 mesh = cat1.to_mesh(resampler='pcs',compensated=True,interlaced=True,Nmesh=Ng,position='Position',BoxSize=Lbox)
 one_plus_delta = mesh.paint(mode='real')
 od = one_plus_delta.value
-delta_x_reconstruct = ((od - 1)/mycosmo.D(z=z)) 
+delta_x_reconstruct = ((od - 1)/mycosmo.D(z=args.redshift)) 
 
 print ("Resample the dx_field from IC:")
 c_result,peak_result = fg.read_out_c18(delta_x_reconstruct,rpos=xpk)

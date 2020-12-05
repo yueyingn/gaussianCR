@@ -212,7 +212,7 @@ class gsCR(object):
             if 'f0' in self.CONS or 'full' in self.CONS: 
                 print ("f0: ","nu = %.1f"%nu, "$\sigma_0$")
             if 'f1' in self.CONS or 'full' in self.CONS: 
-                print ("f1: ","{f1,x = f1,y = f1,z = 0")
+                print ("f1: ","f1,x = f1,y = f1,z = 0")
             if 'f2' in self.CONS or 'full' in self.CONS: 
                 print ("f2: ",r"xd = {:.1f} $\sigma_2$, a12sq = {:.1f}, a13sq = {:.1f},a1={:.2f}, b1={:.2f}, p1={:.2f}".format(xd,a12sq,a13sq,a1,b1,p1))
             if 'vx' in self.CONS or 'full' in self.CONS: 
