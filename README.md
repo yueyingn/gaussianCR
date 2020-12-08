@@ -1,13 +1,13 @@
 # gaussianCR
 
-This is an implementation of the constrained realization to Gaussian primordial density fields, the theoritical formalism is developed by van de Weygaert & Bertschinger 1996. 
+This is an implementation of the constrained realization to Gaussian primordial density fields, based on the theoritical formalism introduced by van de Weygaert & Bertschinger 1996. 
 
 Features
 ------------
 * A general tool to impose constraints to the linear density field.
-* Support the full 18 constraints simultaneously applied to the density field, so that one can impose peak, gravity and tidal field constraints to any Gaussian random field.
-* Convolution-type constraints with a Gaussian kernel, one can specify the size of the Gaussian kernel $R_G$ to select the scale upon which to impose the constraints.
-* For now, we only support imposing the sets of constraints to 1 position in the density field at each time.  To obtain two separate density peaks, one need to construct one after another. 
+* Supports the full 18 constraints simultaneously applied to the density field. One can control the height and shape of peaks in the Gaussian random field, as well as constrain the peculiar velocity and tidal field at the site of the peak.
+* Convolution-type constraints with a Gaussian kernel. One need to specify the size of the Gaussian kernel RG to select the scale upon which to impose the constraints.
+* For now, we only support imposing multiple constraints on 1 density peak covariantly.  To construct separate density peaks, one might need to constrain the peaks one after another. 
 
 
 Usage and tutorial
@@ -18,13 +18,12 @@ Usage and tutorial
 
 Dependencies
 ------------
-It is possible to use this package with only ``numpy`` and ``scipy``, once you manually
-feed in the cosmology and the 3D linear density field as numpy array.
+``gaussianCR`` operates on any given linear density field. It is possible to use this package with only ``numpy`` and ``scipy``, once you manually feed in the cosmology and the 3D linear density field as numpy array.
 
-To generate gaussian random realization of linear density field, we require
-``nbodykit`` and ``fastpm`` installed.
+If one wants to quickly generate a realization of Gaussian random field to play with, I recommend to use ``nbodykit`` and ``fastpm``, as shown in the tutorial/Construct-constrained-realization.
 
-To output IC file compatible with ``MP-Gadget``, we need ``bigfile`` installed.
+You might need to write your own interface to output the constrained-IC for your simulation.
+In the `/examples`, we output the constrained-IC compatible with ``MP-Gadget``, which need ``bigfile`` installed.
 
 Install
 -----------------
