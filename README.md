@@ -27,10 +27,10 @@ In the `/examples`, we output the constrained-IC compatible with ``MP-Gadget``, 
 
 Install
 -----------------
-If you intend to install ``gaussianCR`` in editable mode, clone the repository (or your fork of it)::
+If you intend to install ``gaussianCR`` in editable mode, clone the repository (or your fork of it):
 
     git clone https://github.com/yueyingn/gaussianCR.git
 
-Move to the directory and install with::
+Move to the directory and install with:
 
     pip install -e .
