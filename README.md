@@ -1,6 +1,6 @@
 # gaussianCR
 
-This is an implementation of the constrained realization to Gaussian primordial density fields, based on the theoretical formalism introduced by van de Weygaert & Bertschinger 1996. 
+This is an implementation of the constrained realization to Gaussian primordial density fields, based on the theoretical formalism introduced by [van de Weygaert & Bertschinger (1996)](https://ui.adsabs.harvard.edu/abs/1996MNRAS.281...84V/abstract) and also [Hoffman & Riback (1991)](https://ui.adsabs.harvard.edu/abs/1991ApJ...380L...5H/abstract) 
 
 Features
 ------------
