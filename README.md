@@ -34,3 +34,14 @@ If you intend to install ``gaussianCR`` in editable mode, clone the repository (
 Move to the directory and install with:
 
     pip install -e .
+
+
+References
+------------------
+If you find this code useful in your research, please cite the associated paper `Ni et al. (2020) <https://arxiv.org/abs/2012.04714>` and the original theoritical paper `van de Weygaert & Bertschinger (1996) <https://ui.adsabs.harvard.edu/abs/1996MNRAS.281...84V/abstract>`. Please also consider starring the GitHub repository.
+
+Questions?
+------------------
+If you have any questions or would like to contribute to this code, please open an issue or email to yueyingn@andrew.cmu.edu directly.
+
+
