@@ -29,15 +29,15 @@ def saveIC_gadget3(IC_path,dx_field,Lbox,Ng,cosmology,redshift=99):
     : dx_field  : linear density field at z=0
     : Lbox      : BoxSize, in Mpc/h, will be converted to kpc/h in the IC output
     : Ng        : Number of grid on which to paint the particle
-    : cosmology : nbodykit.cosmology, or astropy.cosmology.FLRW
+    : cosmology : object from nbodykit.cosmology, or astropy.cosmology.FLRW
     : redshift  : redshift of the initial condition
     """
     
     mesh = ArrayMesh(dx_field, BoxSize=Lbox)  # density contrast field centered at zero
     dk_field = mesh.compute(mode='complex')
 
-    shift_gas =  - 0.5 * (cosmology.Omega0_m - cosmology.Omega0_b) / cosmology.Omega0_m
-    shift_dm = 0.5 * cosmology.Omega0_b / cosmology.Omega0_m
+    shift_gas =  - 0.5 * (cosmology.Om0 - cosmology.Ob0) / cosmology.Om0
+    shift_dm = 0.5 * cosmology.Ob0 / cosmology.Om0
     
     pm = ParticleMesh(BoxSize=Lbox, Nmesh=[Ng,Ng,Ng])
     solver = Solver(pm,cosmology,B=1)
@@ -104,8 +104,8 @@ def saveIC_bt2(IC_path,dx_field,Lbox,Ng,cosmology,redshift=99):
     mesh = ArrayMesh(dx_field, BoxSize=Lbox)  # density contrast field centered at zero
     dk_field = mesh.compute(mode='complex')
 
-    shift_gas =  - 0.5 * (cosmology.Omega0_m - cosmology.Omega0_b) / cosmology.Omega0_m
-    shift_dm = 0.5 * cosmology.Omega0_b / cosmology.Omega0_m
+    shift_gas =  - 0.5 * (cosmology.Om0 - cosmology.Ob0) / cosmology.Om0
+    shift_dm = 0.5 * cosmology.Ob0 / cosmology.Om0
     
     pm = ParticleMesh(BoxSize=Lbox, Nmesh=[Ng,Ng,Ng])
     solver = Solver(pm,cosmology,B=1)
